@@ -15,10 +15,10 @@
 1.	Copy the folder “mavlink” into the project (select the project header by right click and paste the folder there)
 2.	Delete the “hello_world.c” in the folder “source”
 3.	Copy the file “hg_mavlink_demo.c” in the folder “source”
-4.	Go to the “Peripherals": Select the “Open Perspective” Icon and select “Peripherals”
+4.	Go to the “Peripherals". To do that select Window->Perspective->Open Perspective->Peripherals
 5.	Select your project and the functional group “BOARD_Init_TERMIANL_UART” and activate the checkbox of UART2 and name this Peripheral “UART_2”
 6.	Now click on “Update Project”
 7.	Build the project
 ###	Flashing the code on the Rapid IoT
-1.	Select the “GUI Flash Tool” and flash you code to the Rapid IoT
+1.	Select the “GUI Flash Tool” on the top and flash your code to the Rapid IoT
 2.	Therefore you have to connect your device to the PC via JLink. Use the orange adapter and connect it to the HDIB-RDB adapter Board for Rapid IoT
