@@ -15,7 +15,7 @@
 1.	Copy the folder “mavlink” into the project (select the project header by right click and paste the folder there)
 2.	Delete the “hello_world.c” in the folder “source”
 3.	Copy the file “hg_mavlink_demo.c” in the folder “source”
-4.	Go to the “Peripherals2: Select zhe “Open Perspective” Icon and select “Peripherals”
+4.	Go to the “Peripherals": Select the “Open Perspective” Icon and select “Peripherals”
 5.	Select your project and the functional group “BOARD_Init_TERMIANL_UART” and activate the checkbox of UART2 and name this Peripheral “UART_2”
 6.	Now click on “Update Project”
 7.	Build the project
