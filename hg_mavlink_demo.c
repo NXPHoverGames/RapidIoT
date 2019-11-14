@@ -129,17 +129,17 @@ extern void THCI_ResetCpuEvent(resetCpuStatus_t resetStatus, uint32_t timeoutUs)
 /*==================================================================================================
  Private macros
  ==================================================================================================*/
-#define gFSCI_IpStackOpGCnf_c                   0xCFU
+#define gFSCI_IpStackOpGCnf_c 0xCFU
 /*! FSCI utility Confirmations/Indications              */
-#define gFSCI_CnfOpcodeGroup_c                  0xA4
+#define gFSCI_CnfOpcodeGroup_c 0xA4
 /*! FSCI operation group for GATT Database (application) */
-#define gFsciBleL2capOpcodeGroup_c              0x41
+#define gFsciBleL2capOpcodeGroup_c 0x41
 /*! FSCI operation group for GATT */
-#define gFsciBleGattOpcodeGroup_c               0x44
+#define gFsciBleGattOpcodeGroup_c 0x44
 /*! FSCI operation group for GATT Database (application) */
-#define gFsciBleGattDbAppOpcodeGroup_c          0x45
+#define gFsciBleGattDbAppOpcodeGroup_c 0x45
 /*! FSCI operation group for GAP */
-#define gFsciBleGapOpcodeGroup_c                0x47
+#define gFsciBleGapOpcodeGroup_c 0x47
 
 /* ATTENTION: the following static configuration is not used, as DHCP is used instead */
 /* IP address configuration. */
@@ -166,6 +166,7 @@ extern void THCI_ResetCpuEvent(resetCpuStatus_t resetStatus, uint32_t timeoutUs)
 #define DEMO_UART_CLK_FREQ CLOCK_GetFreq(UART2_CLK_SRC)
 #define DEMO_UART_IRQn UART2_RX_TX_IRQn
 #define DEMO_UART_IRQHandler UART2_RX_TX_IRQHandler
+#define BOARD_DEBUG_UART_BAUDRATE 115200
 
 /*! @brief Ring buffer size (Unit: Byte). */
 #define DEMO_RING_BUFFER_SIZE 16
@@ -198,19 +199,19 @@ void (*pfAppKeyboardHandler)(void *) = NULL;
 #if WDOG_ENABLE
 /* Configure watchdog. */
 const wdog_config_t wdogConfig =
-{
-	.enableWdog = TRUE, /* Watchdog mode */
-	.timeoutValue = 0x4096U, /* Watchdog overflow time is about 4s*/
-	.enableWindowMode = FALSE, /* Disable window function */
-	.windowValue = 0, /* Watchdog window value */
-	.prescaler = kWDOG_ClockPrescalerDivide1, /* Watchdog clock prescaler */
-	.enableUpdate = TRUE, /* Update register enabled */
-	.clockSource = kWDOG_LpoClockSource, /* Watchdog clock source is LPO 1KHz */
+	{
+		.enableWdog = TRUE,						  /* Watchdog mode */
+		.timeoutValue = 0x4096U,				  /* Watchdog overflow time is about 4s*/
+		.enableWindowMode = FALSE,				  /* Disable window function */
+		.windowValue = 0,						  /* Watchdog window value */
+		.prescaler = kWDOG_ClockPrescalerDivide1, /* Watchdog clock prescaler */
+		.enableUpdate = TRUE,					  /* Update register enabled */
+		.clockSource = kWDOG_LpoClockSource,	  /* Watchdog clock source is LPO 1KHz */
 #if defined(FSL_FEATURE_WDOG_HAS_WAITEN) && FSL_FEATURE_WDOG_HAS_WAITEN
-	.workMode.enableWait = TRUE, /* Enable watchdog in wait mode */
+		.workMode.enableWait = TRUE, /* Enable watchdog in wait mode */
 #endif
-	.workMode.enableStop = FALSE, /* Enable watchdog in stop mode */
-	.workMode.enableDebug = FALSE, /* Disable watchdog in debug mode */
+		.workMode.enableStop = FALSE,  /* Enable watchdog in stop mode */
+		.workMode.enableDebug = FALSE, /* Disable watchdog in debug mode */
 };
 
 static WDOG_Type *wdog_base = WDOG;
@@ -223,18 +224,19 @@ static uint64_t gSwResetTimestamp = 0;
 static bool_t gResetToFactory = FALSE;
 
 /* FSCI Interface Configuration structure */
-static const gFsciSerialConfig_t mFsciSerials[] = { { .baudrate =
-		gUARTBaudRate38400_c, .interfaceType = gSerialMgrUart_c,
-		.interfaceChannel = 4, .virtualInterface = 0
+static const gFsciSerialConfig_t mFsciSerials[] = {{.baudrate =
+														gUARTBaudRate38400_c,
+													.interfaceType = gSerialMgrUart_c,
+													.interfaceChannel = 4,
+													.virtualInterface = 0
 
-},
+												   },
 #if gHybridApp_d
-		{ .baudrate = gUARTBaudRate38400_c, .interfaceType = gSerialMgrUart_c,
-				.interfaceChannel = 4, .virtualInterface = 1
+												   {.baudrate = gUARTBaudRate38400_c, .interfaceType = gSerialMgrUart_c, .interfaceChannel = 4, .virtualInterface = 1
 
-		}
+												   }
 #endif
-		};
+};
 
 #if 0
 static struct netif fsl_netif0;
@@ -254,20 +256,20 @@ taskMsgQueue_t appThreadMsgQueue;
 osaSemaphoreId_t gOtaSem;
 
 uint8_t g_tipString[] =
-		"Uart functional API interrupt example\r\nBoard receives characters then sends them out\r\nNow please input:\r\n";
+	"Uart functional API interrupt example\r\nBoard receives characters then sends them out\r\nNow please input:\r\n";
 uint8_t demoRingBuffer[DEMO_RING_BUFFER_SIZE];
 volatile uint16_t txIndex; /* Index of the data to send out. */
 volatile uint16_t rxIndex; /* Index of the memory to save new arrived data. */
 
-uint32_t tx_custom_mode = 0xffff; 							/*<  A bitfield for use for autopilot-specific flags*/
-uint8_t tx_type = MAV_TYPE_QUADROTOR; 						/*<  Type of the system (quadrotor, helicopter, etc.). Components use the same type as their associated system.*/
-uint8_t tx_autopilot = MAV_AUTOPILOT_PX4; 					/*<  Autopilot type / class.*/
-uint8_t tx_base_mode = MAV_MODE_FLAG_MANUAL_INPUT_ENABLED; 	/*<  System mode bitmap.*/
-uint8_t tx_system_status = MAV_STATE_ACTIVE; 				/*<  System status flag.*/
+uint32_t tx_custom_mode = 0xffff;						   /*<  A bitfield for use for autopilot-specific flags*/
+uint8_t tx_type = MAV_TYPE_QUADROTOR;					   /*<  Type of the system (quadrotor, helicopter, etc.). Components use the same type as their associated system.*/
+uint8_t tx_autopilot = MAV_AUTOPILOT_PX4;				   /*<  Autopilot type / class.*/
+uint8_t tx_base_mode = MAV_MODE_FLAG_MANUAL_INPUT_ENABLED; /*<  System mode bitmap.*/
+uint8_t tx_system_status = MAV_STATE_ACTIVE;			   /*<  System status flag.*/
 
 mavlink_message_t tx_mav_msg;
 uint16_t len_mav;
-uint8_t send_mav_buffer[300] = { 0 };
+uint8_t send_mav_buffer[300] = {0};
 
 /*==================================================================================================
  Public functions
@@ -276,20 +278,23 @@ uint8_t send_mav_buffer[300] = { 0 };
  ==================================================================================================*/
 
 /* Functions required for emwin / Display */
-uint32_t DSPI2_GetFreq(void) {
+uint32_t DSPI2_GetFreq(void)
+{
 	return CLOCK_GetBusClkFreq();
 }
 /* UART Interrupt Handler for receiving messages */
-void DEMO_UART_IRQHandler(void) {
+void DEMO_UART_IRQHandler(void)
+{
 	uint8_t data;
 
 	/* If new data arrived. */
-	if ((kUART_RxDataRegFullFlag | kUART_RxOverrunFlag)
-			& UART_GetStatusFlags(DEMO_UART)) {
+	if ((kUART_RxDataRegFullFlag | kUART_RxOverrunFlag) & UART_GetStatusFlags(DEMO_UART))
+	{
 		data = UART_ReadByte(DEMO_UART);
 
 		/* If ring buffer is not full, add data to ring buffer. */
-		if (((rxIndex + 1) % DEMO_RING_BUFFER_SIZE) != txIndex) {
+		if (((rxIndex + 1) % DEMO_RING_BUFFER_SIZE) != txIndex)
+		{
 			demoRingBuffer[rxIndex] = data;
 			rxIndex++;
 			rxIndex %= DEMO_RING_BUFFER_SIZE;
@@ -302,7 +307,8 @@ void DEMO_UART_IRQHandler(void) {
 #endif
 }
 
-void Init_Display() {
+void Init_Display()
+{
 	Display_Connect(); /* triggers GUI_Init() */
 	Backlight_SetLevel(BLIGHT_LEVEL_HIGH);
 
@@ -310,13 +316,15 @@ void Init_Display() {
 	GUI_SetColor(GUI_WHITE);
 }
 
-#define GUI_FONT_TITLE  GUI_Font8x18
+#define GUI_FONT_TITLE GUI_Font8x18
 #define GUI_FONT_NORMAL GUI_Font8x16
 
-void main_task(uint32_t param) {
+void main_task(uint32_t param)
+{
 	static uint8_t mainInitialized = FALSE;
 
-	if (!mainInitialized) {
+	if (!mainInitialized)
+	{
 		mainInitialized = TRUE;
 
 #if WDOG_ENABLE
@@ -341,7 +349,7 @@ void main_task(uint32_t param) {
 		/* Initialize shell for Thread commands */
 		SHELLComm_Init(&appThreadMsgQueue);
 		/* Initialize FSCI (on two virtual interfaces if hybrid mode is on) */
-		FSCI_Init((void *) &mFsciSerials);
+		FSCI_Init((void *)&mFsciSerials);
 #if gHybridApp_d
 		/* Initialize shell for BLE commands */
 		BleApp_Init();
@@ -365,7 +373,8 @@ void main_task(uint32_t param) {
 	/* Create semaphore to disable (lock) UI manager while running OTA */
 	gOtaSem = OSA_SemaphoreCreate(0U);
 
-	if (NULL == gOtaSem) {
+	if (NULL == gOtaSem)
+	{
 		panic(0, 0, 0, 0);
 	}
 
@@ -402,22 +411,21 @@ void main_task(uint32_t param) {
 
 	/* Enable RX interrupt. */
 	UART_EnableInterrupts(DEMO_UART,
-			kUART_RxDataRegFullInterruptEnable
-					| kUART_RxOverrunInterruptEnable);
+						  kUART_RxDataRegFullInterruptEnable | kUART_RxOverrunInterruptEnable);
 	EnableIRQ(DEMO_UART_IRQn);
 
 	/* Buffer for read messages */
-	char buff[50] = { 0 };
+	char buff[50] = {0};
 
 	/* create mavlink heartbeat message and send over UART */
 	mavlink_msg_heartbeat_pack(1, 200, &tx_mav_msg, tx_type, tx_autopilot,
-			tx_base_mode, tx_custom_mode, tx_system_status);
+							   tx_base_mode, tx_custom_mode, tx_system_status);
 	len_mav = mavlink_msg_to_send_buffer(send_mav_buffer, &tx_mav_msg);
 	UART_WriteBlocking(DEMO_UART, send_mav_buffer, len_mav);
 
-
 	/* Main Application Loop (idle state) */
-	while (1) {
+	while (1)
+	{
 		/* Debug Checks, Leader LED restore check */
 		DBG_Check();
 
@@ -431,29 +439,32 @@ void main_task(uint32_t param) {
 		mavlink_message_t message;
 
 		/* receiving a message via UART*/
-		while ((kUART_TxDataRegEmptyFlag & UART_GetStatusFlags(DEMO_UART))
-				&& (rxIndex != txIndex)) {
+		while ((kUART_TxDataRegEmptyFlag & UART_GetStatusFlags(DEMO_UART)) && (rxIndex != txIndex))
+		{
 			msgReceived = mavlink_parse_char(MAVLINK_COMM_1,
-					demoRingBuffer[txIndex], &message, &status);
+											 demoRingBuffer[txIndex], &message, &status);
 			txIndex++;
 			txIndex %= DEMO_RING_BUFFER_SIZE;
 		}
 
 		/* Message received & Debug enabled */
-		if (msgReceived && debug) {
+		if (msgReceived && debug)
+		{
 
 			/* Report info on shell */
 			shell_printf("Mavlink Message ID #%03d (sys:%d|comp:%d): ",
-					message.msgid, message.sysid, message.compid);
+						 message.msgid, message.sysid, message.compid);
 
 			sprintf(buff, "System ID = %i", message.sysid);
 			GUI_DispStringHCenterAt(buff, 88, 36);
 
 			/* analyze message ID*/
-			switch (message.msgid) {
+			switch (message.msgid)
+			{
 
 			/* received heartbeat message*/
-			case MAVLINK_MSG_ID_HEARTBEAT: {	//0
+			case MAVLINK_MSG_ID_HEARTBEAT:
+			{ //0
 				shell_printf("MAVLINK_MSG_ID_HEARTBEAT ");
 				mavlink_heartbeat_t heartbeat;
 				mavlink_msg_heartbeat_decode(&message, &heartbeat);
@@ -463,12 +474,13 @@ void main_task(uint32_t param) {
 			}
 
 			/* received system status message*/
-			case MAVLINK_MSG_ID_SYS_STATUS: {	//1
+			case MAVLINK_MSG_ID_SYS_STATUS:
+			{ //1
 				shell_printf("MAVLINK_MSG_ID_SYS_STATUS ");
 				mavlink_sys_status_t sys_status;
 				mavlink_msg_sys_status_decode(&message, &sys_status);
 
-				sprintf(buff, "Voltage = %.2f V", (float)(sys_status.voltage_battery)/1000);
+				sprintf(buff, "Voltage = %.2f V", (float)(sys_status.voltage_battery) / 1000);
 				GUI_DispStringHCenterAt(buff, 88, 66);
 
 				sprintf(buff, "Current = %2d mA", sys_status.current_battery);
@@ -482,7 +494,8 @@ void main_task(uint32_t param) {
 			}
 
 			/* received GPS status message*/
-			case MAVLINK_MSG_ID_GPS_STATUS: {	//25
+			case MAVLINK_MSG_ID_GPS_STATUS:
+			{ //25
 				shell_printf("MAVLINK_MSG_ID_GPS_STATUS ");
 				mavlink_gps_status_t gps_status;
 				mavlink_msg_gps_status_decode(&message, &gps_status);
@@ -496,7 +509,8 @@ void main_task(uint32_t param) {
 			}
 
 			/* received battery status message*/
-			case MAVLINK_MSG_ID_BATTERY_STATUS: {	//147
+			case MAVLINK_MSG_ID_BATTERY_STATUS:
+			{ //147
 				shell_printf("MAVLINK_MSG_ID_BATTERY_STATUS ");
 				mavlink_battery_status_t battery_status;
 				mavlink_msg_battery_status_decode(&message, &battery_status);
@@ -506,7 +520,8 @@ void main_task(uint32_t param) {
 			}
 
 			/* received high latency message*/
-			case MAVLINK_MSG_ID_HIGH_LATENCY: {	//234
+			case MAVLINK_MSG_ID_HIGH_LATENCY:
+			{ //234
 				shell_printf("MAVLINK_MSG_ID_HIGH_LATENCY ");
 				mavlink_high_latency_t high_latency;
 				mavlink_msg_high_latency_decode(&message, &high_latency);
@@ -516,7 +531,8 @@ void main_task(uint32_t param) {
 			}
 
 			/* received status message*/
-			case MAVLINK_MSG_ID_STATUSTEXT: {	//253
+			case MAVLINK_MSG_ID_STATUSTEXT:
+			{ //253
 				shell_printf("MAVLINK_MSG_ID_STATUSTEXT ");
 				mavlink_statustext_t statustext;
 				mavlink_msg_statustext_decode(&message, &statustext);
@@ -526,11 +542,12 @@ void main_task(uint32_t param) {
 			}
 
 			/* received global position*/
-			case MAVLINK_MSG_ID_UTM_GLOBAL_POSITION: {	//340
+			case MAVLINK_MSG_ID_UTM_GLOBAL_POSITION:
+			{ //340
 				shell_printf("MAVLINK_MSG_ID_UTM_GLOBAL_POSITION ");
 				mavlink_utm_global_position_t utm_global_position;
 				mavlink_msg_utm_global_position_decode(&message,
-						&utm_global_position);
+													   &utm_global_position);
 				sprintf(buff, "%02x%02x%02x%02x%02x%02x%02x%02x%02x ",
 						utm_global_position.uas_id[0],
 						utm_global_position.uas_id[1],
@@ -560,33 +577,35 @@ void main_task(uint32_t param) {
 				break;
 			}
 
-			default: {
+			default:
+			{
 				shell_printf("\n");
 				break;
 			}
 
 			} // end: switch msgid
 		}
-
 	}
 }
 
-bool_t SERIAL_TAP_IP6_SEND(struct pbuf *p, struct netif *inp) {
-	struct ip6_hdr *ip6hdr = (struct ip6_hdr *) p->payload;
+bool_t SERIAL_TAP_IP6_SEND(struct pbuf *p, struct netif *inp)
+{
+	struct ip6_hdr *ip6hdr = (struct ip6_hdr *)p->payload;
 
-	SerialTun_IPPacketSendRequest_t req = { .Size = SIZEOF_ETH_HDR + p->tot_len,
-			.Data = (uint8_t *) p->payload - SIZEOF_ETH_HDR };
+	SerialTun_IPPacketSendRequest_t req = {.Size = SIZEOF_ETH_HDR + p->tot_len,
+										   .Data = (uint8_t *)p->payload - SIZEOF_ETH_HDR};
 
 	// TCP traffic is not sent to the black-box
-	if (IP6H_NEXTH(ip6hdr) != IP6_NEXTH_TCP) {
+	if (IP6H_NEXTH(ip6hdr) != IP6_NEXTH_TCP)
+	{
 		SerialTun_IPPacketSendRequest(&req, 0);
 
 		// UDP traffic is not processed by LwIP
-		if (IP6H_NEXTH(ip6hdr) == IP6_NEXTH_UDP) {
+		if (IP6H_NEXTH(ip6hdr) == IP6_NEXTH_UDP)
+		{
 			pbuf_free(p);
 			return TRUE;
 		}
-
 	}
 
 	// not eaten traffic to be processed by LwIP
@@ -600,7 +619,8 @@ bool_t SERIAL_TAP_IP6_SEND(struct pbuf *p, struct netif *inp) {
  \param  [in]    resetToFactory
  \return         None
  ***************************************************************************************************/
-void APP_ResetMcuOnTimeout(uint32_t timeoutMs, bool_t resetToFactory) {
+void APP_ResetMcuOnTimeout(uint32_t timeoutMs, bool_t resetToFactory)
+{
 	gResetToFactory = resetToFactory;
 	gSwResetTimestamp = TMR_GetTimestamp();
 	gSwResetTimestamp += (timeoutMs * 1000); /* microseconds*/
@@ -611,12 +631,13 @@ void APP_ResetMcuOnTimeout(uint32_t timeoutMs, bool_t resetToFactory) {
  \brief  Return the interval time until a MCU reset occurs
  \return  the time interval; 0 means that no Mcu reset was programmed
  ***************************************************************************************************/
-uint32_t APP_GetResetMcuTimeout(void) {
+uint32_t APP_GetResetMcuTimeout(void)
+{
 	uint32_t timeInterval = 0;
 
-	if (gSwResetTimestamp > TMR_GetTimestamp()) {
-		timeInterval = (uint32_t) ((gSwResetTimestamp - TMR_GetTimestamp())
-				/ 1000);
+	if (gSwResetTimestamp > TMR_GetTimestamp())
+	{
+		timeInterval = (uint32_t)((gSwResetTimestamp - TMR_GetTimestamp()) / 1000);
 	}
 
 	return timeInterval;
@@ -625,59 +646,69 @@ uint32_t APP_GetResetMcuTimeout(void) {
 /*==================================================================================================
  Private functions
  ==================================================================================================*/
-static void fsciThciRegister(uint32_t fsciInterfaceId) {
+static void fsciThciRegister(uint32_t fsciInterfaceId)
+{
 	if (FSCI_RegisterOpGroup(gFSCI_IpStackOpGCnf_c, gFsciMonitorMode_c,
-			THCI_RxCb,
-			NULL, fsciInterfaceId) != gFsciSuccess_c) {
-		panic(0, (uint32_t) fsciThciRegister, 0, 0);
+							 THCI_RxCb,
+							 NULL, fsciInterfaceId) != gFsciSuccess_c)
+	{
+		panic(0, (uint32_t)fsciThciRegister, 0, 0);
 	}
 }
 
-static void fsciBleRegister(uint32_t fsciInterfaceId) {
+static void fsciBleRegister(uint32_t fsciInterfaceId)
+{
 	/* Register Generic FSCI */
 	if (FSCI_RegisterOpGroup(gFSCI_CnfOpcodeGroup_c, gFsciMonitorMode_c,
-			BLE_FSCI_RxCb,
-			NULL, fsciInterfaceId) != gFsciSuccess_c) {
-		panic(0, (uint32_t) fsciBleRegister, 0, 0);
+							 BLE_FSCI_RxCb,
+							 NULL, fsciInterfaceId) != gFsciSuccess_c)
+	{
+		panic(0, (uint32_t)fsciBleRegister, 0, 0);
 	}
 
 	/* Register L2CAP command handler */
 	if (FSCI_RegisterOpGroup(gFsciBleL2capOpcodeGroup_c, gFsciMonitorMode_c,
-			BLE_FSCI_RxCb,
-			NULL, fsciInterfaceId) != gFsciSuccess_c) {
-		panic(0, (uint32_t) fsciBleRegister, 0, 0);
+							 BLE_FSCI_RxCb,
+							 NULL, fsciInterfaceId) != gFsciSuccess_c)
+	{
+		panic(0, (uint32_t)fsciBleRegister, 0, 0);
 	}
 
 	/* Register GATT command handler */
 	if (FSCI_RegisterOpGroup(gFsciBleGattOpcodeGroup_c, gFsciMonitorMode_c,
-			BLE_FSCI_RxCb,
-			NULL, fsciInterfaceId) != gFsciSuccess_c) {
-		panic(0, (uint32_t) fsciBleRegister, 0, 0);
+							 BLE_FSCI_RxCb,
+							 NULL, fsciInterfaceId) != gFsciSuccess_c)
+	{
+		panic(0, (uint32_t)fsciBleRegister, 0, 0);
 	}
 
 	/* Register GATT Database (application) command handler */
 	if (FSCI_RegisterOpGroup(gFsciBleGattDbAppOpcodeGroup_c, gFsciMonitorMode_c,
-			BLE_FSCI_RxCb,
-			NULL, fsciInterfaceId) != gFsciSuccess_c) {
-		panic(0, (uint32_t) fsciBleRegister, 0, 0);
+							 BLE_FSCI_RxCb,
+							 NULL, fsciInterfaceId) != gFsciSuccess_c)
+	{
+		panic(0, (uint32_t)fsciBleRegister, 0, 0);
 	}
 
 	/* Register GAP command handler */
 	if (FSCI_RegisterOpGroup(gFsciBleGapOpcodeGroup_c, gFsciMonitorMode_c,
-			BLE_FSCI_RxCb,
-			NULL, fsciInterfaceId) != gFsciSuccess_c) {
-		panic(0, (uint32_t) fsciBleRegister, 0, 0);
+							 BLE_FSCI_RxCb,
+							 NULL, fsciInterfaceId) != gFsciSuccess_c)
+	{
+		panic(0, (uint32_t)fsciBleRegister, 0, 0);
 	}
 }
 
-static void THCI_RxCb(void *pData, void *param, uint32_t interfaceId) {
+static void THCI_RxCb(void *pData, void *param, uint32_t interfaceId)
+{
 	thrEvtContainer_t container; // this could be allocated instead
 	KHC_ThreadIP_RX_MsgHandler(pData, &container, interfaceId);
 
 	SHELL_ThrEventNotify(&container);
 }
 
-static void BLE_FSCI_RxCb(void *pData, void *param, uint32_t interfaceId) {
+static void BLE_FSCI_RxCb(void *pData, void *param, uint32_t interfaceId)
+{
 #if gHybridApp_d
 	bleEvtContainer_t container; // this could be allocated instead
 	KHC_BLE_RX_MsgHandler(pData, &container, interfaceId);
@@ -691,8 +722,10 @@ static void BLE_FSCI_RxCb(void *pData, void *param, uint32_t interfaceId) {
  \param  [in]
  \return         None
  ***************************************************************************************************/
-static void APP_HandleMcuResetOnIdle(void) {
-	if ((gSwResetTimestamp) && (gSwResetTimestamp < TMR_GetTimestamp())) {
+static void APP_HandleMcuResetOnIdle(void)
+{
+	if ((gSwResetTimestamp) && (gSwResetTimestamp < TMR_GetTimestamp()))
+	{
 		gSwResetTimestamp = 0;
 		/* disable interrupts */
 		OSA_InterruptDisable();
@@ -703,7 +736,8 @@ static void APP_HandleMcuResetOnIdle(void) {
 		THCI_ResetCpuEvent(gResetCpuSuccess_c, 0);
 #else
 
-		if (gResetToFactory) {
+		if (gResetToFactory)
+		{
 			/* Erase NVM Datasets */
 			//NvFormat();
 		}
