@@ -394,7 +394,7 @@ void main_task(uint32_t param) {
 	uart_config_t config;
 
 	UART_GetDefaultConfig(&config);
-	config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE;
+	config.baudRate_Bps = 115200;
 	config.enableTx = true;
 	config.enableRx = true;
 
